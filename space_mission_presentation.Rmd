@@ -1,0 +1,43 @@
+---
+title: "Space Mission Presentation"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("jpeg")
+library(tidyverse)
+library(janitor)
+library(naniar)
+```
+
+## What Data, and Where is it from?
+
+Sourced from [Maven Analytics](https://mavenanalytics.io/data-playground?page=5&pageSize=5)
+
+```{r include=FALSE}
+spacemission <- read_csv("spacemission/space_missions.csv") %>% clean_names()
+```
+
+```{r}
+glimpse(spacemission)
+```
+```{r}
+miss_var_summary(spacemission)
+```
+
+
+```{r}
+spacemission <- spacemission %>%
+  separate(date, into = c("year", "month", "date"), sep = "-")
+```
+
+```{r}
+spacemission %>%
+  group_by(year) %>%
+  ggplot(aes(x = year)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
