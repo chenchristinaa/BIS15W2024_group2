@@ -17,7 +17,7 @@ library(naniar)
 Sourced from [Maven Analytics](https://mavenanalytics.io/data-playground?page=5&pageSize=5)
 
 ```{r include=FALSE}
-spacemission <- read_csv("spacemission/space_missions.csv") %>% clean_names()
+spacemission <- read_csv("data/space_missions.csv") %>% clean_names()
 ```
 
 ```{r}

@@ -16,7 +16,7 @@ library(naniar)
 ```
 
 ```{r}
-spacemission <- read_csv("spacemission/space_missions.csv") %>% clean_names()
+spacemission <- read_csv("data/space_missions.csv") %>% clean_names()
 ```
 
 ```{r}
