@@ -1,0 +1,57 @@
+---
+title: "christina_notes"
+author: "Christina Chen"
+date: "2024-03-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(naniar)
+```
+
+```{r}
+spacemission <- read_csv("spacemission/space_missions.csv") %>% clean_names()
+```
+
+```{r}
+glimpse(spacemission)
+```
+
+```{r}
+miss_var_summary(spacemission)
+```
+
+
+```{r}
+date_spacemission <- spacemission %>%
+  separate(date, into = c("year", "month", "date"), sep = "-")
+```
+
+```{r}
+date_spacemission %>%
+  group_by(year) %>%
+  ggplot(aes(x = year)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# space race was around:          1951 - 1993
+# kennedy speech for man on moon: 1961
+# moon landing                    1969
+```
+
+```{r}
+spacemission$date <- ymd(spacemission$date)
+```
+
+```{r}
+spacemission %>%
+  group_by(date) %>%
+  ggplot(aes(x = date)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
