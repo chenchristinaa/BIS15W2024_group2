@@ -41,3 +41,21 @@ spacemission %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
+```{r separates location into different parts}
+site_spacemission <- spacemission %>%
+  separate(location, into = c("road", "site", "state", "country"), extra = "drop", fill = "left", sep = ",")
+```
+
+## Check
+
+```{r}
+site_spacemission %>%
+  group_by(country) %>%
+  summarise(total = n()) %>%
+  ggplot(aes(x = country, y = total, fill = country)) +
+  geom_col() + 
+  coord_flip() +
+  geom_text(aes(label = total), hjust = -0.2, size = 2, color = "black") + # the first blank column is Brazil
+  theme_classic() + 
+  theme(legend.position = "bottom", legend.text = element_text(size = 5.5))
+```

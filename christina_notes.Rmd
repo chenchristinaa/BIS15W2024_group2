@@ -9,31 +9,31 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r libraries}
 library(tidyverse)
 library(janitor)
 library(naniar)
 ```
 
-```{r}
+```{r read data}
 spacemission <- read_csv("data/space_missions.csv") %>% clean_names()
 ```
 
-```{r}
+```{r glimpse}
 glimpse(spacemission)
 ```
 
-```{r}
+```{r percentage of NAs}
 miss_var_summary(spacemission)
 ```
 
 
-```{r}
+```{r separate date into parts}
 date_spacemission <- spacemission %>%
   separate(date, into = c("year", "month", "date"), sep = "-")
 ```
 
-```{r}
+```{r plotting by year}
 date_spacemission %>%
   group_by(year) %>%
   ggplot(aes(x = year)) +
@@ -44,14 +44,40 @@ date_spacemission %>%
 # moon landing                    1969
 ```
 
-```{r}
+```{r making date into <date>}
 spacemission$date <- ymd(spacemission$date)
 ```
 
-```{r}
+```{r plotting by date}
 spacemission %>%
   group_by(date) %>%
   ggplot(aes(x = date)) +
   geom_bar() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
+
+```{r separates location into different parts}
+site_spacemission <- spacemission %>%
+  separate(location, into = c("road", "site", "state", "country"), extra = "drop", fill = "left", sep = ",")
+```
+
+```{r checking site_spacemission}
+glimpse(site_spacemission)
+
+miss_var_summary(site_spacemission)
+
+# location did not separate for company "AEB"
+```
+
+```{r}
+site_spacemission %>%
+  group_by(country) %>%
+  summarise(total = n()) %>%
+  ggplot(aes(x = country, y = total, fill = country)) +
+  geom_col() + 
+  coord_flip() +
+  geom_text(aes(label = total), hjust = -0.2, size = 2, color = "blue") + # the first blank column is Brazil
+  theme_classic() + 
+  theme(legend.position = "bottom", legend.text = element_text(size = 5.5))
+```
+
