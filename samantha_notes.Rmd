@@ -1,0 +1,58 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("jpeg")
+library(tidyverse)
+library(janitor)
+library(naniar)
+```
+
+```{r}
+spacemission <- read_csv("data/space_missions.csv") %>% clean_names()
+```
+
+```{r}
+spacemission %>%
+  summarize(mean_price = mean(price, na.rm = T),
+            max_price = max(price, na.rm = T),
+            min_price = min(price, na.rm = T))
+```
+Most expensive- 5,000,000 from USSR
+```{r}
+spacemission %>%
+  arrange(desc(price))
+```
+
+Least expensive- 2,500,000 from Pacific Spaceport Complex, Kodiak, Alaska
+```{r}
+spacemission %>%
+  arrange(price)
+```
+## How much each country has spent on rockets on average / mission
+```{r}
+site_spacemission <- spacemission %>%
+  separate(location, into = c("road", "site", "state", "country"), extra = "drop", fill = "left", sep = ",")
+```
+
+```{r}
+site_spacemission %>%
+  group_by(country) %>%
+  summarize(mean_cost_by_country = mean(price, na.rm = T)) %>%
+  arrange(desc(mean_cost_by_country))
+```
+## Proportion of failures to successes
+```{r}
+site_spacemission %>%
+  group_by(country) %>%
+  filter(mission_status == "Success") %>%
+  count(country) %>%
+  arrange(desc(n))
+```
+
+```{r}
+site_spacemission %>%
+  group_by(country) %>%
+  filter(mission_status == "Failure") %>%
+  count(country) %>%
+  arrange(desc(n))
+```
+

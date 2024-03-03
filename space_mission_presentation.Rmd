@@ -59,3 +59,16 @@ site_spacemission %>%
   theme_classic() + 
   theme(legend.position = "bottom", legend.text = element_text(size = 5.5))
 ```
+
+## Average Price of Mission
+```{r}
+spacemission %>%
+  summarize(mean_cost = mean(price, na.rm = T))
+```
+## Proportion of Failures to Successes
+```{r}
+spacemission %>%
+  
+```
+
+
