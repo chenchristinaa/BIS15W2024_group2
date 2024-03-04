@@ -33,7 +33,7 @@ spacemission %>%
   group_by(year) %>%
   ggplot(aes(x = year)) +
   geom_bar() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
 ### notable events
@@ -57,6 +57,7 @@ spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names(
 
 ```{r separates location and picks out state and country}
 spacemission_fixed %>%
+  separate(date, into = c("year", "month", "date"), sep = "-") %>%
   separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4)
 ```
@@ -68,10 +69,13 @@ spacemission_fixed %>%
   group_by(country) %>%
   summarise(total = n()) %>%
   ggplot(aes(x = reorder(country, total), y = total, fill = country)) +
-  geom_col() + 
+  geom_col(show.legend = F) + 
   coord_flip() +
-  geom_text(aes(label = total), hjust = -0.2, size = 2, color = "blue") + # the first blank column is Brazil
+  geom_text(aes(label = total), hjust = -0.2, size = 2, color = "black") + # the first blank column is Brazil
   theme_classic() + 
-  theme(legend.position = "bottom")
+  labs(title = "Space Missions by Country",
+       x = "Country",
+       y = "Total Missions") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
