@@ -17,8 +17,6 @@ library(naniar)
 
 ```{r read data}
 spacemission <- read_csv("data/space_missions.csv") %>% clean_names()
-spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names()
-
 ```
 
 ```{r glimpse}
@@ -29,63 +27,51 @@ glimpse(spacemission)
 miss_var_summary(spacemission)
 ```
 
-
-```{r separate date into parts}
-date_spacemission <- spacemission %>%
-  separate(date, into = c("year", "month", "date"), sep = "-")
-```
-
-```{r plotting by year}
-date_spacemission %>%
+```{r plotting launches by year}
+spacemission %>%
+  separate(date, into = c("year", "month", "date"), sep = "-") %>%
   group_by(year) %>%
   ggplot(aes(x = year)) +
   geom_bar() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-# space race was around:          1951 - 1993
-# kennedy speech for man on moon: 1961
-# moon landing                    1969
 ```
 
-```{r making date into <date>}
-spacemission$date <- ymd(spacemission$date)
+### notable events
+- space race was around:          1951 - 1993
+- kennedy speech for man on moon: 1961
+- moon landing                    1969
+
+### stuff i had to fix by editing the csv
+- added "USA" to new mexico (x3)
+- fixed spelling of "plateform" to "platfrom (x1)
+- fixed special characters of "Alacantara, Maranhao, Brazil" (x3)
+- added "Kekaha, Hawaii, USA" to Pacific Missile Range Facility (x1)
+- added "Spain" to Gran Canaria (x2)
+- added "International Waters" to Pacific Ocean (x36)
+- added "International Waters" to Barents Sea (x3)
+- added "International Waters" to Yellow Sea (x3)
+
+```{r reading fixed data}
+spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names()
 ```
 
-```{r plotting by date}
-spacemission %>%
-  group_by(date) %>%
-  ggplot(aes(x = date)) +
-  geom_bar() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-```
-
-```{r separates location into different parts}
-site_spacemission <- spacemission %>%
-  separate(location, into = c("site1", "site2", "site3", "state", "country"), extra = "drop", fill = "left", sep = ",")
-```
-
-```{r}
-site_spacemission_fixed <- spacemission_fixed %>%
+```{r separates location and picks out state and country}
+spacemission_fixed %>%
   separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4)
 ```
 
-```{r checking site_spacemission}
-glimpse(site_spacemission)
-
-miss_var_summary(site_spacemission)
-
-# location did not separate for company "AEB"
-```
-
-```{r}
-site_spacemission_fixed %>%
+```{r plotting number of space launches by country}
+spacemission_fixed %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  select(-site1, -site2, -site3, -site4) %>%
   group_by(country) %>%
   summarise(total = n()) %>%
-  ggplot(aes(x = country, y = total, fill = country)) +
+  ggplot(aes(x = reorder(country, total), y = total, fill = country)) +
   geom_col() + 
   coord_flip() +
   geom_text(aes(label = total), hjust = -0.2, size = 2, color = "blue") + # the first blank column is Brazil
   theme_classic() + 
-  theme(legend.position = "bottom", legend.text = element_text(size = 5.5))
+  theme(legend.position = "bottom")
 ```
 
