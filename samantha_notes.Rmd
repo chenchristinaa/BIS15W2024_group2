@@ -27,32 +27,93 @@ Least expensive- 2,500,000 from Pacific Spaceport Complex, Kodiak, Alaska
 spacemission %>%
   arrange(price)
 ```
-## How much each country has spent on rockets on average / mission
-```{r}
-site_spacemission <- spacemission %>%
-  separate(location, into = c("road", "site", "state", "country"), extra = "drop", fill = "left", sep = ",")
-```
 
 ```{r}
-site_spacemission %>%
+spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names()
+```
+
+## How much each country has spent on rockets on average / mission
+```{r}
+spacemission_dates <- spacemission %>% clean_names() %>%
+  separate(date, into = c("year", "month", "date"), sep = "-")
+```
+
+
+```{r}
+spacemission_attempt <- spacemission_fixed %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  select(-site1, -site2, -site3, -site4)
+```
+
+## Mean cost of missions by country
+```{r}
+spacemission_attempt %>%
   group_by(country) %>%
   summarize(mean_cost_by_country = mean(price, na.rm = T)) %>%
+  filter(!is.na(mean_cost_by_country)) %>%
   arrange(desc(mean_cost_by_country))
 ```
 ## Proportion of failures to successes
 ```{r}
-site_spacemission %>%
+successful_missions <- spacemission_attempt %>%
   group_by(country) %>%
   filter(mission_status == "Success") %>%
   count(country) %>%
+  mutate(number_of_sucesses = n) %>%
   arrange(desc(n))
+successful_missions
 ```
 
 ```{r}
-site_spacemission %>%
+failed_missions <- spacemission_attempt %>%
   group_by(country) %>%
   filter(mission_status == "Failure") %>%
   count(country) %>%
+  mutate(number_of_failures = n) %>%
   arrange(desc(n))
+failed_missions
+```
+## Number of Successes Versus Number of Failures by Country
+```{r}
+spacemission_attempt %>%
+  separate(date, into = c("year", "month", "date"), sep = "-") %>%
+  group_by(country, mission_status) %>%
+  mutate(mission_status = as.factor(mission_status)) %>%
+  ggplot(aes(x=country, y=mission_status, fill=mission_status))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, vjust = .5))+
+  theme(legend.position = "bottom")+
+    labs(title = "Proportion of Mission Status By Country Between 1957-2022",
+       x = "Country",
+       y = "Mission Status")
+```
+
+
+
+## Number of Successes Versus Number of Failures
+```{r}
+spacemission_dates %>%
+  group_by(year, mission_status) %>%
+  ggplot(aes(x=year, fill = mission_status))+
+  geom_bar(na.rm = T)+
+  theme(axis.text.x = element_text(angle = 90, vjust = .5))+
+  theme(legend.position = "bottom")+
+  labs(title = "Mission Status Between 1957-2022",
+       y = "Year",
+       x = "Mission Status")
+```
+
+
+## Number of active rockets over time
+```{r}
+spacemission_dates %>%
+  group_by(year, rocket_status) %>%
+  ggplot(aes(x=year, fill = rocket_status))+
+  geom_bar(na.rm = T)+
+  theme(axis.text.x = element_text(angle = 90, vjust = .5))+
+  theme(legend.position = "bottom")+
+  labs(title = "Proportion of Active Rockets to Inactive Rockets Between 1957-2022",
+       x = "Year",
+       y = "Number of Rockets")
 ```
 
