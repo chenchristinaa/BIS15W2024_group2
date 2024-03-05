@@ -29,10 +29,10 @@ miss_var_summary(spacemission)
 
 ```{r plotting launches by year}
 spacemission %>%
-  separate(date, into = c("year", "month", "date"), sep = "-") %>%
+  separate(date, into = c("year", "month", "day"), sep = "-") %>%
   group_by(year) %>%
-  ggplot(aes(x = year)) +
-  geom_bar() +
+  ggplot(aes(x = year, fill = year)) +
+  geom_bar(show.legend = F) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -57,7 +57,7 @@ spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names(
 
 ```{r separates location and picks out state and country}
 spacemission_fixed %>%
-  separate(date, into = c("year", "month", "date"), sep = "-") %>%
+  separate(date, into = c("year", "month", "day"), sep = "-") %>%
   separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4)
 ```
@@ -72,6 +72,34 @@ spacemission_fixed %>%
   geom_col(show.legend = F) + 
   coord_flip() +
   geom_text(aes(label = total), hjust = -0.2, size = 2, color = "black") + # the first blank column is Brazil
+  theme_classic() + 
+  labs(title = "Space Missions by Country",
+       x = "Country",
+       y = "Total Missions") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r number of success and failures}
+spacemission_fixed %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  select(-site1, -site2, -site3, -site4) %>%
+  separate(date, into = c("year", "month", "day"), sep = "-") %>%
+  group_by(country, mission_status) %>%
+  summarise(total = n()) %>%
+  pivot_wider(names_from = "mission_status",
+              values_from = "total") %>%
+  arrange(desc(Success))
+```
+
+```{r}
+spacemission_fixed %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  select(-site1, -site2, -site3, -site4) %>%
+  separate(date, into = c("year", "month", "day"), sep = "-") %>%
+  group_by(country, mission_status) %>%
+  ggplot(aes(x = country, fill = mission_status)) +
+  geom_bar() + 
+  coord_flip() +
   theme_classic() + 
   labs(title = "Space Missions by Country",
        x = "Country",
