@@ -2,6 +2,10 @@
 
 Hello! This is our repository for BIS 15L Group Project.
 
+## About Our Project
+
+Our project revolves around space missions from 1957 to late 2022.
+
 ## Class Information:
 - BIS15L
 - Winter 2024
