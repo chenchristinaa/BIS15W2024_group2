@@ -1,0 +1,31 @@
+```{r}
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(shiny)
+library(shinydashboard)
+```
+
+# Graph Outline
+
+```{r}
+
+```
+
+# App
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+  
+)
+
+server <- function(input, output, session) {
+  
+}
+
+shinyApp(ui, server)
+```
+
+
+

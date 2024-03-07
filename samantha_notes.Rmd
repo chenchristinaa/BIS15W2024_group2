@@ -1,6 +1,6 @@
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-library("jpeg")
+#library(jpeg)
 library(tidyverse)
 library(janitor)
 library(naniar)
@@ -40,14 +40,14 @@ spacemission_dates <- spacemission %>% clean_names() %>%
 
 
 ```{r}
-spacemission_attempt <- spacemission_fixed %>%
+spacemission_fixed <- spacemission_fixed %>%
   separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4)
 ```
 
 ## Mean cost of missions by country
 ```{r}
-spacemission_attempt %>%
+spacemission_fixed %>%
   group_by(country) %>%
   summarize(mean_cost_by_country = mean(price, na.rm = T)) %>%
   filter(!is.na(mean_cost_by_country)) %>%
@@ -75,7 +75,7 @@ failed_missions
 ```
 ## Number of Successes Versus Number of Failures by Country
 ```{r}
-spacemission_attempt %>%
+spacemission_fixed %>%
   separate(date, into = c("year", "month", "date"), sep = "-") %>%
   group_by(country, mission_status) %>%
   mutate(mission_status = as.factor(mission_status)) %>%
