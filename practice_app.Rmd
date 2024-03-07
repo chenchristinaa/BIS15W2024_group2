@@ -1,0 +1,65 @@
+```{r}
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(shiny)
+library(shinydashboard)
+```
+# Import Data
+```{r}
+spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names()
+spacemission_dates <- spacemission %>% clean_names() %>%
+  separate(date, into = c("year", "month", "date"), sep = "-")
+```
+
+```{r}
+names(spacemission_dates)
+```
+
+
+# Graph Outline
+
+```{r}
+spacemission_dates %>%
+  ggplot(aes(x = year, y = mission_status, fill = mission_status))+
+  geom_col()+
+  coord_flip()
+```
+
+# App
+```{r}
+library(shiny)
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Rocket Statistics from 1957-2018"),
+  dashboardSidebar(disable = T),
+  dashboardBody(
+    fluidRow(
+      box(title = "Plot Options", width = 3,
+          selectInput("x", "Select Input", choices = c("mission_status", "rocket_status", "country"),
+                      selected = "mission_status"),
+          ),#closes first box
+      box(title = "Year versus Country Graph", width =8,
+          plotOutput2("plot", width = "600px", height = "500px")
+          )#closes the second box
+    )#closes fluid row
+  )#closes dashboard body
+  
+) #closes dashboard page
+
+server <- function(input, output, session) {
+  output$myImage1
+  output$plot2 <- renderPlot({
+    spacemission_dates %>%
+      group_by(year) %>%
+      ggplot(aes_string(x="year", fill = input$x))+
+      geom_bar()
+  }) #closes render plot
+  session$onSessionEnded(stopApp)
+} #closes session
+
+shinyApp(ui, server)
+```
+
+
+

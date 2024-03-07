@@ -117,3 +117,9 @@ spacemission_dates %>%
        y = "Number of Rockets")
 ```
 
+# Unique rockets
+```{r}
+spacemission %>%
+  group_by(rocket)
+```
+
