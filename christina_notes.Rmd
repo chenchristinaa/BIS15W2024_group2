@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(janitor)
 library(naniar)
+library(shiny)
+library(shinydashboard)
 ```
 
 ```{r read data}
@@ -31,9 +33,15 @@ miss_var_summary(spacemission)
 spacemission %>%
   separate(date, into = c("year", "month", "day"), sep = "-") %>%
   group_by(year) %>%
-  ggplot(aes(x = year, fill = year)) +
-  geom_bar(show.legend = F) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+  summarise(total = n()) %>%
+  ggplot(aes(x = year, y = total, fill = year)) +
+  geom_col(show.legend = F) +
+  geom_text(aes(label = total), vjust = -0.5, size = 2, color = "black") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  labs(title = "Space Missions by Year",
+       x = "Year",
+       y = "Total Missions") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ### notable events
@@ -106,4 +114,33 @@ spacemission_fixed %>%
        y = "Total Missions") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+
+```{r}
+ui <- fluidPage(
+  box(
+    radioButtons("fill", "Select Fill", choices = c("country", "rocket_status", "mission_status"))
+  ),
+  plotOutput("plot")
+)
+
+server <- function(input, output, session) {
+  session$onSessionEnded(stopApp)
+  output$plot <- renderPlot({
+    spacemission_fixed %>%
+      separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+      select(-site1, -site2, -site3, -site4) %>%
+      separate(date, into = c("year", "month", "day"), sep = "-") %>%
+      group_by(year) %>%
+      ggplot(aes_string(x = "year", fill = input$fill)) +
+      geom_bar() + 
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+      labs(title = "Space Missions by Year",
+           x = "Year",
+           y = "Total Missions")
+  })
+}
+
+shinyApp(ui, server)
+```
+
 
