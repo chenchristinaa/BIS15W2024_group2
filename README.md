@@ -10,4 +10,4 @@ Hello! This is our repository for BIS 15L Group Project.
 
 ## Contact Information:
 
-Emails: Christina Chen (omqchen@ucdavis.edu) and Samantha Swan ()
+Emails: [Christina Chen](mailto:omqchen@ucdavis.edu) and Samantha Swan
