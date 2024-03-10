@@ -69,7 +69,6 @@ server <- function(input, output, session) {
     output$plot2 <- renderPlot({
     spacemission_fixed %>%
       select(rocket, year) %>%
-      group_by(year) %>%
       filter(rocket == input$image_select) %>%
       ggplot(aes(x = "year"))+
       geom_bar()
