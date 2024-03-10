@@ -36,8 +36,6 @@ spacemission_test <- spacemission_fixed %>%
 
 # App
 ```{r}
-library(shiny)
-
 ui <- dashboardPage(
   dashboardHeader(title = "Rocket Statistics from 1957-2018"),
   dashboardSidebar(disable = T),
@@ -45,21 +43,22 @@ ui <- dashboardPage(
     fluidRow(
       box(title = "Plot (RENAME PENDING)", width = 12,
           radioButtons("x", "Select Fill", choices = c("mission_status", "rocket_status", "country"),
-                      selected = "mission_status"),
+                       selected = "mission_status"),
           plotOutput("plot")
-          ),#closes first box
-      box(title = "Rocket Pictures", width = 4,
-          selectInput("image_select", "Select Image:", choices=c("cosmos-2i", "cosmos-3m","molniya-m","soyuz-u", "voshkod")),
-          uiOutput("dynamic_image"),
-          ),#closes second box
+      ),#closes first box
+      box(title = "Rocket Pictures", width = 5,
+          selectInput("image_select", "Select Image:", choices=c("cosmos-2i", "cosmos-3m","molniya-m","soyuz-u", "Voshkod")),
+          imageOutput("image"),
+          selectInput("x", "Select X",)
+      ),#closes second box
     )#closes fluid row
   )#closes dashboard body
   
 ) #closes dashboard page
 
 server <- function(input, output, session) {
-  output$dynamic_image <- renderUI({
-    img(src = paste0("../images/", input$image_select), width = "200px", height = "200px")
+  output$image <- renderImage({
+    list(src = paste0("images/", input$image_select, ".png"), contentType = "image/png", width = "300px")
   }) #closes render image
   output$plot <- renderPlot({
     spacemission_fixed %>%
@@ -68,11 +67,31 @@ server <- function(input, output, session) {
       geom_bar() + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
   }) #closes render plot
+    output$plot <- renderPlot({
+    spacemission_fixed %>%
+      select(rocket, year) %>%
+      group_by(year) %>%
+      filter(rocket = contains(input$image_select)) %>%
+      count(rocket) %>%
+      ggplot(aes_string(x = "year", y = "n"))+
+      geom_col()
+  }) #closes render plot
+
   session$onSessionEnded(stopApp)
 } #closes session
 
 shinyApp(ui, server)
 ```
+
+  output$plot <- renderPlot({
+    spacemission_fixed %>%
+      select(rocket, year) %>%
+      group_by(year) %>%
+      filter(rocket = contains(input$image_select)) %>%
+      count(rocket) %>%
+      ggplot(aes_string(x = "year", y = "n"))+
+      geom_col()
+  }) #closes render plot
 
 ```{r}
 library(shiny)
