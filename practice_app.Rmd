@@ -44,13 +44,11 @@ ui <- dashboardPage(
       box(title = "Plot (RENAME PENDING)", width = 12,
           radioButtons("x", "Select Fill", choices = c("mission_status", "rocket_status", "country"),
                        selected = "mission_status"),
-          plotOutput("plot")
+          plotOutput("plot1")
       ),#closes first box
       box(title = "Rocket Pictures", width = 5,
-          selectInput("image_select", "Select Image:", choices=c("Cosmos 2I", "Cosmos 3M","Molniya M","Soyuz U", "Voskhod")),
-          imageOutput("image"),
-          selectInput("z", "Select Rocket", choices = c("Cosmos-2I", "Cosmos-3M","Molniya-M","Soyuz-U", "Voskhod")),
-          plotOutput("plot"),
+          selectInput("image_select", "Select Image:", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
+          imageOutput("image"), plotOutput("plot2")
       ),#closes second box
     )#closes fluid row
   )#closes dashboard body
@@ -61,21 +59,20 @@ server <- function(input, output, session) {
   output$image <- renderImage({
     list(src = paste0("images/", input$image_select, ".png"), contentType = "image/png", width = "300px")
   }) #closes render image
-  output$plot <- renderPlot({
+  output$plot1 <- renderPlot({
     spacemission_fixed %>%
       group_by(year) %>%
       ggplot(aes_string(x="year", fill = input$x))+
       geom_bar() + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
   }) #closes render plot
-    output$plot <- renderPlot({
+    output$plot2 <- renderPlot({
     spacemission_fixed %>%
       select(rocket, year) %>%
       group_by(year) %>%
-      filter(rocket = contains(input$z)) %>%
-      count(rocket) %>%
-      ggplot(aes(x = "year", y = "n"))+
-      geom_col()
+      filter(rocket == input$image_select) %>%
+      ggplot(aes(x = "year"))+
+      geom_bar()
   }) #closes render plot
 
   session$onSessionEnded(stopApp)
