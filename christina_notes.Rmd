@@ -2,7 +2,9 @@
 title: "christina_notes"
 author: "Christina Chen"
 date: "2024-03-02"
-output: html_document
+output: 
+  html_document: 
+    df_print: tibble
 ---
 
 ```{r setup, include=FALSE}
@@ -18,30 +20,15 @@ library(shinydashboard)
 ```
 
 ```{r read data}
-spacemission <- read_csv("data/space_missions.csv") %>% clean_names()
+spacemission_raw <- read_csv("data/space_missions.csv") %>% clean_names()
 ```
 
 ```{r glimpse}
-glimpse(spacemission)
+glimpse(spacemission_raw)
 ```
 
 ```{r percentage of NAs}
-miss_var_summary(spacemission)
-```
-
-```{r plotting launches by year}
-spacemission %>%
-  separate(date, into = c("year", "month", "day"), sep = "-") %>%
-  group_by(year) %>%
-  summarise(total = n()) %>%
-  ggplot(aes(x = year, y = total, fill = year)) +
-  geom_col(show.legend = F) +
-  geom_text(aes(label = total), vjust = -0.5, size = 2, color = "black") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(title = "Space Missions by Year",
-       x = "Year",
-       y = "Total Missions") +
-  theme(plot.title = element_text(hjust = 0.5))
+miss_var_summary(spacemission_raw)
 ```
 
 ### notable events
@@ -62,18 +49,30 @@ spacemission %>%
 ```{r reading fixed data}
 spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% clean_names()
 ```
-
-```{r separates location and picks out state and country}
-spacemission_fixed %>%
+```{r transforming data}
+spacemission <- spacemission_fixed %>%
   separate(date, into = c("year", "month", "day"), sep = "-") %>%
-  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "area", "country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4)
+spacemission
+```
+
+```{r plotting launches by year}
+spacemission %>%
+  group_by(year) %>%
+  summarise(total = n()) %>%
+  ggplot(aes(x = year, y = total, fill = year)) +
+  geom_col(show.legend = F) +
+  geom_text(aes(label = total), hjust = -0.25, size = 2, angle = 90, color = "black") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  labs(title = "Space Missions Over Time",
+       x = "Year",
+       y = "Total Missions") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ```{r plotting number of space launches by country}
-spacemission_fixed %>%
-  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
-  select(-site1, -site2, -site3, -site4) %>%
+spacemission %>%
   group_by(country) %>%
   summarise(total = n()) %>%
   ggplot(aes(x = reorder(country, total), y = total, fill = country)) +
@@ -88,10 +87,7 @@ spacemission_fixed %>%
 ```
 
 ```{r number of success and failures}
-spacemission_fixed %>%
-  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
-  select(-site1, -site2, -site3, -site4) %>%
-  separate(date, into = c("year", "month", "day"), sep = "-") %>%
+spacemission %>%
   group_by(country, mission_status) %>%
   summarise(total = n()) %>%
   pivot_wider(names_from = "mission_status",
@@ -99,11 +95,8 @@ spacemission_fixed %>%
   arrange(desc(Success))
 ```
 
-```{r}
-spacemission_fixed %>%
-  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
-  select(-site1, -site2, -site3, -site4) %>%
-  separate(date, into = c("year", "month", "day"), sep = "-") %>%
+```{r proportion of space mission statuses by country}
+spacemission %>%
   group_by(country, mission_status) %>%
   ggplot(aes(x = country, fill = mission_status)) +
   geom_bar() + 
@@ -115,28 +108,30 @@ spacemission_fixed %>%
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r}
-ui <- fluidPage(
-  box(
-    radioButtons("fill", "Select Fill", choices = c("country", "rocket_status", "mission_status"))
-  ),
-  plotOutput("plot")
+```{r shiny app practice}
+ui <- dashboardPage(
+  dashboardHeader(title = "Space Missions"),
+  dashboardSidebar(title = "FUN FACTS:"),
+  dashboardBody(
+  box(width = 19, 
+    radioButtons("fill", "Select Fill", choices = c("country", "rocket_status", "mission_status")),
+    plotOutput("plot")
+)
+)
 )
 
 server <- function(input, output, session) {
   session$onSessionEnded(stopApp)
   output$plot <- renderPlot({
-    spacemission_fixed %>%
-      separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
-      select(-site1, -site2, -site3, -site4) %>%
-      separate(date, into = c("year", "month", "day"), sep = "-") %>%
+    spacemission %>%
       group_by(year) %>%
       ggplot(aes_string(x = "year", fill = input$fill)) +
       geom_bar() + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
       labs(title = "Space Missions by Year",
            x = "Year",
-           y = "Total Missions")
+           y = "Total Missions") +
+      theme(plot.title = element_text(hjust = 0.5))
   })
 }
 
