@@ -1,0 +1,119 @@
+```{r}
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(shiny)
+library(shinydashboard)
+```
+# Import Data
+```{r}
+spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% 
+  clean_names() %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  separate(date, into = c("year", "month", "date"), sep = "-")
+```
+
+```{r}
+names(spacemission_fixed)
+```
+
+
+# Graph Outline
+
+```{r}
+spacemission_fixed %>%
+  ggplot(aes(x = year, y = mission_status, fill = mission_status))+
+  geom_col()+
+  coord_flip()
+```
+
+```{r}
+spacemission_test <- spacemission_fixed %>%
+  mutate()
+```
+
+
+# App
+```{r}
+library(shiny)
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Rocket Statistics from 1957-2018"),
+  dashboardSidebar(disable = T),
+  dashboardBody(
+    fluidRow(
+      box(title = "Plot Options", width = 3,
+          selectInput("x", "Select Input", choices = c("mission_status", "rocket_status", "country"),
+                      selected = "mission_status"),
+          ),#closes first box
+      box(title = "Rocket Pictures", width = 4,
+          imageOutput("_____", width = "200px", height = "200px")
+          )#closes second box
+      box(title = "Year versus Country Graph", width =8,
+          plotOutput("plot", width = "600px", height = "500px")
+          )#closes the third box
+    )#closes fluid row
+  )#closes dashboard body
+  
+) #closes dashboard page
+
+server <- function(input, output, session) {
+  output$myImage <- renderImage({
+    
+  }) #closes render image
+  output$plot <- renderPlot({
+    spacemission_fixed %>%
+      group_by(year) %>%
+      ggplot(aes_string(x="year", fill = input$x))+
+      geom_bar()
+  }) #closes render plot
+  session$onSessionEnded(stopApp)
+} #closes session
+
+shinyApp(ui, server)
+```
+
+```{r}
+library(shiny)
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Rocket Statistics"),
+  dashboardSidebar(disable = T),
+  dashboardBody(
+    fluidRow(
+      box(title = "Plot Options", width = 3,
+          selectInput("x", "Select Input", choices = c("mission_status", "rocket_status", "country"),
+                      selected = "mission_status"),
+          ),#closes first box
+      box(title = "Rocket Statistics from 1957-2022", width =8,
+          plotOutput("plot", width = "600px", height = "500px")
+          )#closes the second box
+    )#closes fluid row
+  )#closes dashboard body
+  
+) #closes dashboard page
+
+server <- function(input, output, session) {
+  output$plot <- renderPlot({
+    spacemission_fixed %>%
+      group_by(year) %>%
+      ggplot(aes_string(x="year", fill = input$x))+
+      geom_bar()+
+      coord_flip()+
+      labs(x = "Count",
+           y = "Year")
+  }) #closes render plot
+  session$onSessionEnded(stopApp)
+} #closes session
+
+shinyApp(ui, server)
+```
+
+```{r}
+spacemission_fixed %>%
+  select(rocket) %>%
+  group_by(rocket) %>%
+  count(rocket) %>%
+  arrange(desc(n))
+```
+
