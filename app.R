@@ -19,7 +19,7 @@ ui <- dashboardPage(
           plotOutput("plot")
       ),#closes first box
       box(title = "Rocket Pictures", width = 5,
-          selectInput("image_select", "Select Image:", choices=c("Cosmos 2I", "Cosmos 3M","Molniya M","Soyuz U", "Vostok")),
+          selectInput("image_select", "Select Image:", choices=c("Cosmos 2I", "Cosmos 3M","Molniya M","Soyuz U", "Voskhod")),
           imageOutput("image"),
       ),#closes second box
     )#closes fluid row
