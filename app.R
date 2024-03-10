@@ -18,11 +18,13 @@ ui <- dashboardPage(
                        selected = "mission_status"),
           plotOutput("plot")
       ),#closes first box
+    ),#closes fluid row
+    fluidRow(
       box(title = "Rocket Pictures", width = 5,
           selectInput("image_select", "Select Image:", choices=c("Cosmos 2I", "Cosmos 3M","Molniya M","Soyuz U", "Voskhod")),
           imageOutput("image"),
       ),#closes second box
-    )#closes fluid row
+    )#closes fluidrow
   )#closes dashboard body
   
 ) #closes dashboard page
