@@ -47,10 +47,10 @@ ui <- dashboardPage(
           plotOutput("plot")
       ),#closes first box
       box(title = "Rocket Pictures", width = 5,
-          selectInput("image_select", "Select Image:", choices=c("cosmos-2i", "cosmos-3m","molniya-m","soyuz-u", "Voshkod")),
+          selectInput("image_select", "Select Image:", choices=c("Cosmos-2I", "Cosmos-3M","Molniya-M","Soyuz-U", "Voskhod")),
           imageOutput("image"),
-          selectInput("z", "Select Rocket", choices = c("cosmos-2i", "cosmos-3m","molniya-m","soyuz-u", "Voshkod")),
-          plotOutput("plot")
+          selectInput("z", "Select Rocket", choices = c("Cosmos-2I", "Cosmos-3M","Molniya-M","Soyuz-U", "Voskhod")),
+          plotOutput("plot"),
       ),#closes second box
     )#closes fluid row
   )#closes dashboard body
@@ -83,16 +83,6 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
-
-  output$plot <- renderPlot({
-    spacemission_fixed %>%
-      select(rocket, year) %>%
-      group_by(year) %>%
-      filter(rocket = contains(input$image_select)) %>%
-      count(rocket) %>%
-      ggplot(aes_string(x = "year", y = "n"))+
-      geom_col()
-  }) #closes render plot
 
 ```{r}
 library(shiny)

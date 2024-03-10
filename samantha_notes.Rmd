@@ -119,6 +119,8 @@ spacemission_dates %>%
 # Unique rockets
 ```{r}
 spacemission %>%
-  group_by(rocket)
+  select
+  group_by(rocket) %>%
+  
 ```
 
