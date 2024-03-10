@@ -40,7 +40,7 @@ spacemission_dates <- spacemission %>% clean_names() %>%
 
 ```{r}
 spacemission_fixed <- spacemission_fixed %>%
-  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "area", "country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4)
 ```
 
