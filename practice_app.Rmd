@@ -9,7 +9,7 @@ library(shinydashboard)
 ```{r}
 spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% 
   clean_names() %>%
-  separate(location, into = c("site1", "site2", "site3", "site4", "state", "country"), extra = "drop", fill = "left", sep = ",") %>%
+  separate(location, into = c("site1", "site2", "site3", "site4", "area", "country"), extra = "drop", fill = "left", sep = ",") %>%
   separate(date, into = c("year", "month", "date"), sep = "-")
 ```
 
@@ -47,7 +47,7 @@ ui <- dashboardPage(
                       selected = "mission_status"),
           ),#closes first box
       box(title = "Rocket Pictures", width = 4,
-          imageOutput("_____", width = "200px", height = "200px")
+          selectInput("image_select", "Select Image:", choices=c("Cosmos-2I", "Cosmos-3M","Molniya-M","Soyuz U", "Voshkod")), width = "200px", height = "200px")
           )#closes second box
       box(title = "Year versus Country Graph", width =8,
           plotOutput("plot", width = "600px", height = "500px")
