@@ -43,17 +43,15 @@ ui <- dashboardPage(
   dashboardSidebar(disable = T),
   dashboardBody(
     fluidRow(
-      box(title = "Plot Options", width = 3,
-          selectInput("x", "Select Input", choices = c("mission_status", "rocket_status", "country"),
+      box(title = "Plot (RENAME PENDING)", width = 12,
+          radioButtons("x", "Select Fill", choices = c("mission_status", "rocket_status", "country"),
                       selected = "mission_status"),
+          plotOutput("plot")
           ),#closes first box
       box(title = "Rocket Pictures", width = 4,
           selectInput("image_select", "Select Image:", choices=c("cosmos-2i", "cosmos-3m","molniya-m","soyuz-u", "voshkod")),
           uiOutput("dynamic_image"),
           ),#closes second box
-      box(title = "Year versus Country Graph", width =8,
-          plotOutput("plot", width = "600px", height = "500px")
-          )#closes the third box
     )#closes fluid row
   )#closes dashboard body
   
@@ -67,7 +65,8 @@ server <- function(input, output, session) {
     spacemission_fixed %>%
       group_by(year) %>%
       ggplot(aes_string(x="year", fill = input$x))+
-      geom_bar()
+      geom_bar() + 
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
   }) #closes render plot
   session$onSessionEnded(stopApp)
 } #closes session
