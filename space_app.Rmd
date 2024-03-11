@@ -70,11 +70,12 @@ server <- function(input, output, session) {
     output$plot2 <- renderPlot({
 spacemission_fixed %>%
   select(rocket, year) %>%
-  filter(rocket == input$select_image) %>%
+  filter(rocket == input$image_select) %>%
   group_by(year) %>%
   mutate(year = as.numeric(year)) %>%
   count(year) %>%
   ggplot(aes(x = "year", y = "n"))+
+  coord_flip()+
   geom_col(fill = "purple")+
   labs(title = "Frequency a Selected Rocket was Launched Per Year",
        x = "Year",
