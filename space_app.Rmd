@@ -47,7 +47,7 @@ ui <- dashboardPage(
           plotOutput("plot1")
       ),#closes first box
       box(title = "Rocket Pictures", width = 5,
-          selectInput("image_select", "Select Image:", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
+          selectInput("image_select", "Select Image", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
           imageOutput("image"), plotOutput("plot2")
       ),#closes second box
     )#closes fluid row
@@ -58,7 +58,8 @@ ui <- dashboardPage(
 server <- function(input, output, session) {
   output$image <- renderImage({
     list(src = paste0("images/", input$image_select, ".png"), contentType = "image/png", width = "300px")
-  }) #closes render image
+  }, 
+  deleteFile = FALSE) #closes render image
   output$plot1 <- renderPlot({
     spacemission_fixed %>%
       group_by(year) %>%
@@ -67,11 +68,17 @@ server <- function(input, output, session) {
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
   }) #closes render plot
     output$plot2 <- renderPlot({
-    spacemission_fixed %>%
-      select(rocket, year) %>%
-      filter(rocket == input$image_select) %>%
-      ggplot(aes(x = "year"))+
-      geom_bar()
+spacemission_fixed %>%
+  select(rocket, year) %>%
+  filter(rocket == input$select_image) %>%
+  group_by(year) %>%
+  mutate(year = as.numeric(year)) %>%
+  count(year) %>%
+  ggplot(aes(x = "year", y = "n"))+
+  geom_col(fill = "purple")+
+  labs(title = "Frequency a Selected Rocket was Launched Per Year",
+       x = "Year",
+       y = "Frequency")
   }) #closes render plot
 
   session$onSessionEnded(stopApp)
@@ -80,41 +87,6 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-```{r}
-library(shiny)
-
-ui <- dashboardPage(
-  dashboardHeader(title = "Rocket Statistics"),
-  dashboardSidebar(disable = T),
-  dashboardBody(
-    fluidRow(
-      box(title = "Plot Options", width = 3,
-          selectInput("x", "Select Input", choices = c("mission_status", "rocket_status", "country"),
-                      selected = "mission_status"),
-          ),#closes first box
-      box(title = "Rocket Statistics from 1957-2022", width =8,
-          plotOutput("plot", width = "600px", height = "500px")
-          )#closes the second box
-    )#closes fluid row
-  )#closes dashboard body
-  
-) #closes dashboard page
-
-server <- function(input, output, session) {
-  output$plot <- renderPlot({
-    spacemission_fixed %>%
-      group_by(year) %>%
-      ggplot(aes_string(x="year", fill = input$x))+
-      geom_bar()+
-      coord_flip()+
-      labs(x = "Count",
-           y = "Year")
-  }) #closes render plot
-  session$onSessionEnded(stopApp)
-} #closes session
-
-shinyApp(ui, server)
-```
 
 ```{r}
 spacemission_fixed %>%
@@ -124,8 +96,6 @@ spacemission_fixed %>%
   arrange(desc(n))
 ```
 
-
-
 ```{r}
 spacemission_fixed %>%
   select(rocket, year) %>%
@@ -133,7 +103,10 @@ spacemission_fixed %>%
   group_by(year) %>%
   mutate(year = as.numeric(year)) %>%
   count(year) %>%
-    ggplot(aes(x = "year", y = "n"))+
-    geom_col()
+  ggplot(aes(x = year, y = n))+
+  geom_col(fill = "purple")+
+  labs(title = "Frequency a Selected Rocket was Launched Per Year",
+       x = "Year",
+       y = "Frequency")
 ```
 
