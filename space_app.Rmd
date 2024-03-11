@@ -124,3 +124,16 @@ spacemission_fixed %>%
   arrange(desc(n))
 ```
 
+
+
+```{r}
+spacemission_fixed %>%
+  select(rocket, year) %>%
+  filter(rocket == "Voskhod") %>%
+  group_by(year) %>%
+  mutate(year = as.numeric(year)) %>%
+  count(year) %>%
+    ggplot(aes(x = "year", y = "n"))+
+    geom_col()
+```
+
