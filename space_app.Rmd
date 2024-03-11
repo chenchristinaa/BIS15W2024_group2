@@ -45,11 +45,14 @@ ui <- dashboardPage(
           radioButtons("x", "Select Fill", choices = c("mission_status", "rocket_status", "country"),
                        selected = "mission_status"),
           plotOutput("plot1")
-      )),#closes first box
-      fluidRow(title = "Rocket Pictures", width = 5,
-          selectInput("image_select", "Select Image", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
-          imageOutput("image"), plotOutput("plot2")
+      )#closes first box
       ),#closes fluid row
+      fluidRow(
+    box(title = "Rocket Pictures",
+          selectInput("image_select", "Select Image", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
+          imageOutput("image")), #close the second box 
+        box(plotOutput("plot2")) #closes third box
+    ),#closes fluid row
     )#closes dashboard body
   
 ) #closes dashboard page
@@ -73,7 +76,7 @@ spacemission_fixed %>%
   group_by(year) %>%
   mutate(year = as.numeric(year)) %>%
   count(year) %>%
-  ggplot(aes(x = "year", y = "n"))+
+  ggplot(aes(x = year, y = n))+
   geom_col(fill = "purple")+
   labs(title = "Frequency a Selected Rocket was Launched Per Year",
        x = "Year",
