@@ -99,7 +99,7 @@ ui <- dashboardPage(
 server <- function(input, output, session) {
   
   output$image <- renderImage({
-    list(src = paste0("images/", input$image_select, ".png"), contentType = "image/png", width = "300px")
+    list(src = paste0("images/", input$image_select, ".png"), contentType = "image/png", width = "500px")
   }, 
   deleteFile = FALSE
 ) #closes render image
