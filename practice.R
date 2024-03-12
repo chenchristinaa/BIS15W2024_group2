@@ -42,11 +42,12 @@ ui <- dashboardPage(
                   HTML("<p>Data collected from:<p>
                         <li><a href='https://mavenanalytics.io/data-playground?page=5&pageSize=5'>Maven Analytics</a></li>
                         <p>Images collected from:<p>
-                        <li><a href='www.google.com'>Name of Picture/Link</a></li>
-                        <li><a href='www.google.com'>Name of Picture/Link</a></li>
-                        <li><a href='www.google.com'>Name of Picture/Link</a></li>
-                        <li><a href='www.google.com'>Name of Picture/Link</a></li>"
-) # closes HTML
+                        <li><a href='www.google.com'>Cosmos-2I (63SM)</a></li>
+                        <li><a href='www.google.com'>Cosmos-3M (11K65M)</a></li>
+                        <li><a href='www.google.com'>Falcon 9 Block 5</a></li>
+                        <li><a href='www.google.com'>Soyuz U</a></li>
+                        <li><a href='www.google.com'>Voskhod</a></li>"
+                  ) # closes HTML
 ), # closes box
 
                 box(title = "About the Data",
@@ -122,6 +123,7 @@ server <- function(input, output, session) {
       count(Year) %>%
       ggplot(aes(x = Year, y = n))+
       geom_col(fill = "purple")+
+      geom_text(aes(label = n), hjust = 0.5, vjust = -.75, size = 4, angle = 0, color = "black") +
       labs(title = paste("Frequency", input$image_select, "was Launched Per Year"),
            y = "Frequency")
 }) #closes render plot
