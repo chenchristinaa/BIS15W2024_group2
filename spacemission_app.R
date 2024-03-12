@@ -89,7 +89,7 @@ ui <- dashboardPage(
                         <li>RocketStatus: status of the rocket as of August 2022</li>
                         <li>Price: price of the rocket in millions of US dollars</li>
                         <li>MissionStatus: status of the mission</li>"
-    ) # closes HTML
+) # closes HTML
 ), # closes box
  
                 box(title = "Soyuz U Anomaly Explained",
@@ -99,7 +99,7 @@ ui <- dashboardPage(
                         The launches post 2000s were the Soyuz U/Fregat model where a third stage of the 
                         launching process was added. Production of the Soyuz U was retired in 2015 after 
                         a series of mechanical failures.<p>"
-    ) # closes HTML
+) # closes HTML
 ), # closes box
 
                 box(title = "Credits",
