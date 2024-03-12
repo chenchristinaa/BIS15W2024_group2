@@ -1,0 +1,136 @@
+library(tidyverse)
+library(shiny)
+library(shinydashboard)
+
+spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% 
+  separate("Location", into = c("site1", "site2", "site3", "site4", "Area", "Country"), extra = "drop", fill = "left", sep = ",") %>%
+  select(-site1, -site2, -site3, -site4) %>%
+  separate(Date, into = c("Year", "Month", "Date"), sep = "-")
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Space Missions"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("rocket")),
+      menuItem("Information", tabName = "information", icon = icon("pencil")),
+      menuItem("Our Dataset", tabName = "data", icon = icon("list"))
+    )
+),
+  dashboardBody(
+    tabItems(
+      tabItem(tabName = "dashboard",
+              fluidRow(
+                box(title = "Space Missions Over Time", width = 12,
+                    radioButtons("x", "Select Fill", choices = c("MissionStatus", "RocketStatus", "Country"),
+                                 selected = "Country"),
+                    plotOutput("plot1")
+) # closes first box
+), # closes fluid row
+              
+              fluidRow(
+                box(title = "Rocket Pictures",
+                    selectInput("image_select", "Select Image", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
+                    imageOutput("image")
+), #close the second box 
+                box(plotOutput("plot2")
+) #closes third box
+), # closes fluid row
+), # closes tab item
+      tabItem(tabName = "information",
+              fluidRow(
+                box(title = "Sources",
+                  HTML("<p>Data collected from:<p>
+                        <li><a href='https://mavenanalytics.io/data-playground?page=5&pageSize=5'>Maven Analytics</a></li>
+                        <p>Images collected from:<p>
+                        <li><a href='www.google.com'>Name of Picture/Link</a></li>
+                        <li><a href='www.google.com'>Name of Picture/Link</a></li>
+                        <li><a href='www.google.com'>Name of Picture/Link</a></li>
+                        <li><a href='www.google.com'>Name of Picture/Link</a></li>"
+) # closes HTML
+), # closes box
+
+                box(title = "About the Data",
+                  "The dataset contains information about space missions from 1957 
+                  to August 2022. The dataset includes information about the date, 
+                  location, mission status, rocket status, and country of the mission."
+), # closes box
+
+                box(title = "Cleaning the Data",
+                  HTML("<p>Modifications were made to a duplicated version of the csv of the dataset. Modifications included:</p>
+                        <ul>
+                        <li>fixed spelling of `plateform` to `platform` (x1)</li>
+                        <li>added `USA` to New Mexico observations (x3)</li>
+                        <li>fixed special characters of `Alacantara, Maranhao, Brazil` (x3)</li>
+                        <li>added `Kekaha, Hawaii, USA` to Pacific Missile Range Facility observation (x1)</li>
+                        <li>added `Spain` to Gran Canaria observations (x2)</li>
+                        <li>added `International Waters` to Pacific Ocean observations (x36)</li>
+                        <li>added `International Waters` to Barents Sea observations (x3)</li>
+                        <li>added `International Waters` to Yellow Sea observations (x3)</li>
+                        </ul>"
+) # closes HTML
+), # closes box
+  
+                box(title = "Credits",
+                  HTML("<p>This Shiny app was created by Christina Chen and Samantha Swan for their BIS15L course. Course details include:<p>
+                        <ul>
+                        <li>Name of Course: Introduction to Data Science for Biologists</li>
+                        <li>Course Code: BIS15L</li>
+                        <li>Time: Winter Quarter 2024</li>
+                        <li>Instructor: Joel Lefford</li>
+                        <li>TA: Bryshal Moore</li>
+                        <li>Grade They're Hoping to Get: A+</li>
+                        </ul>"
+  
+) # closes HTML
+) # closes box
+), # closes fluid row
+), # closes tab item
+
+      tabItem(tabName = "data",
+             fluidRow(
+                  title = "CSV Data",
+                   dataTableOutput("csv_table")
+) # closes fluid row
+) # closes tab item
+) # closes tab items
+) # closes dashboard body
+) # closes dashboard page
+
+server <- function(input, output, session) {
+  
+  output$image <- renderImage({
+    list(src = paste0("images/", input$image_select, ".png"), contentType = "image/png", width = "300px")
+  }, 
+  deleteFile = FALSE
+) #closes render image
+  
+  output$plot1 <- renderPlot({
+    spacemission_fixed %>%
+      group_by(Year) %>%
+      ggplot(aes_string(x="Year", fill = input$x))+
+      geom_bar() + 
+      labs(y = "Total Missions") +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+}) #closes render plot
+  
+  output$plot2 <- renderPlot({
+    spacemission_fixed %>%
+      select(Rocket, Year) %>%
+      filter(Rocket == input$image_select) %>%
+      group_by(Year) %>%
+      mutate(Year = as.numeric(Year)) %>%
+      count(Year) %>%
+      ggplot(aes(x = Year, y = n))+
+      geom_col(fill = "purple")+
+      labs(title = "Frequency a Selected Rocket was Launched Per Year",
+           y = "Frequency")
+}) #closes render plot
+
+  output$csv_table <- renderDataTable({
+    spacemission_fixed
+}) # closes render data table
+  
+  session$onSessionEnded(stopApp)
+} #closes session
+
+shinyApp(ui, server)
