@@ -1,11 +1,17 @@
+# libraries
+
 library(tidyverse)
 library(shiny)
 library(shinydashboard)
+
+# reading and cleaning data
 
 spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% 
   separate("Location", into = c("site1", "site2", "site3", "site4", "Area", "Country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4) %>%
   separate(Date, into = c("Year", "Month", "Day"), sep = "-")
+
+# shiny app
 
 ui <- dashboardPage(
   dashboardHeader(title = "Space Missions"),
@@ -47,7 +53,7 @@ ui <- dashboardPage(
                         <li><a href='https://www.spacelaunchschedule.com/wp-content/uploads/falcon2520925_image_20210107183433.jpeg'>Falcon 9 Block 5</a></li>
                         <li><a href='https://spaceflight101.com/progress-ms-05/photos-final-soyuz-u-takes-shape-for-liftoff-from-baikonur/'>Soyuz U</a></li>
                         <li><a href='https://vtwp-media.s3-accelerate.amazonaws.com/2022/09/vostok-spacecraft-scaled.jpg'>Voskhod</a></li>"
-                  ) # closes HTML
+) # closes HTML
 ), # closes box
 
                 box(title = "About the Data",
