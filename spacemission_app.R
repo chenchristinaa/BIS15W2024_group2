@@ -108,7 +108,7 @@ ui <- dashboardPage(
                         <li>Name of Course: Introduction to Data Science for Biologists</li>
                         <li>Course Code: BIS15L</li>
                         <li>Time: Winter Quarter 2024</li>
-                        <li>Instructor: Joel Lefford</li>
+                        <li>Instructor: Joel Ledford</li>
                         <li>TA: Bryshal Moore</li>
                         <li>Grade They're Hoping to Get: A+</li>
                         </ul>"
