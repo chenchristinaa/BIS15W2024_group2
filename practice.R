@@ -56,6 +56,13 @@ ui <- dashboardPage(
                   location, mission status, rocket status, and country of the mission."
 ), # closes box
 
+
+box(title = "Soyuz U Anomaly Explained",
+    HTML("<p>Beginning in 1973, the Soyuz family of rockets was developed by the USSR. The Soyuz-U rockets hold the world record for highest launch rate in a year (1979) and the Soyuz family was a dominant force in the USSR space race program. The launches post 2000s were the Soyuz U/Fregat model where a third stage of the launching process was added. Production of the Soyuz U was retired in 2015 after a series of mechanical failures.<p>
+                        </ul>"
+         
+    ) # closes HTML
+), # closes box
                 box(title = "Cleaning the Data",
                   HTML("<p>Modifications were made to a duplicated version of the csv of the dataset. Modifications included:</p>
                         <ul>
@@ -70,7 +77,7 @@ ui <- dashboardPage(
                         </ul>"
 ) # closes HTML
 ), # closes box
-  
+ 
                 box(title = "Credits",
                   HTML("<p>This Shiny app was created by Christina Chen and Samantha Swan for their BIS15L course. Course details include:<p>
                         <ul>
