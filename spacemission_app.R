@@ -20,8 +20,8 @@ ui <- dashboardPage(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("rocket")),
       menuItem("Information", tabName = "information", icon = icon("pencil")),
       menuItem("Our Dataset", tabName = "data", icon = icon("list"))
-    )
-),
+) # closes sidebar menu
+), #closes dashboard sidebar
   dashboardBody(
     tabItems(
       tabItem(tabName = "dashboard",
@@ -42,6 +42,7 @@ ui <- dashboardPage(
 ) #closes third box
 ), # closes fluid row
 ), # closes tab item
+
       tabItem(tabName = "information",
               fluidRow(
                 box(title = "Sources",
@@ -56,20 +57,7 @@ ui <- dashboardPage(
 ) # closes HTML
 ), # closes box
 
-                box(title = "About the Data",
-                  "The dataset contains information about space missions from 1957 
-                  to August 2022. The dataset includes information about the date, 
-                  location, mission status, rocket status, and country of the mission."
-), # closes box
-
-
-box(title = "Soyuz U Anomaly Explained",
-    HTML("<p>Beginning in 1973, the Soyuz family of rockets was developed by the USSR. The Soyuz-U rockets hold the world record for highest launch rate in a year (1979) and the Soyuz family was a dominant force in the USSR space race program. The launches post 2000s were the Soyuz U/Fregat model where a third stage of the launching process was added. Production of the Soyuz U was retired in 2015 after a series of mechanical failures.<p>
-                        </ul>"
-         
-    ) # closes HTML
-), # closes box
-                box(title = "Cleaning the Data",
+              box(title = "Cleaning the Data",
                   HTML("<p>Modifications were made to a duplicated version of the csv of the dataset. Modifications included:</p>
                         <ul>
                         <li>fixed spelling of `plateform` to `platform` (x1)</li>
@@ -83,7 +71,37 @@ box(title = "Soyuz U Anomaly Explained",
                         </ul>"
 ) # closes HTML
 ), # closes box
+
+                box(title = "About the Data",
+                  HTML("<p>The dataset contains information about space missions from 1957 
+                        to August 2022. The dataset includes information about the date, 
+                        location, mission status, rocket status, and country of the mission.
+                        About the variables:</p>
+                        <li>Company: company responsible for the space mission</li>
+                        <li>Area: area within the country where the rocket was launched</li>
+                        <li>Country: country where the rocket was launched</li>
+                        <li>Year: year that the rocket was launched</li>
+                        <li>Month: month that the rocket was launched</li>
+                        <li>Day: day of month that the rocket was launched</li>
+                        <li>Time: time of day the rocket was launched (UTC)</li>
+                        <li>Rocket: name of rocket used</li>
+                        <li>Mission: name of space mission</li>
+                        <li>RocketStatus: status of the rocket as of August 2022</li>
+                        <li>Price: price of the rocket in millions of US dollars</li>
+                        <li>MissionStatus: status of the mission</li>"
+    ) # closes HTML
+), # closes box
  
+                box(title = "Soyuz U Anomaly Explained",
+                  HTML("<p>Beginning in 1973, the Soyuz family of rockets was developed by the USSR. 
+                        The Soyuz-U rockets hold the world record for highest launch rate in a year 
+                        (1979) and the Soyuz family was a dominant force in the USSR space race program. 
+                        The launches post 2000s were the Soyuz U/Fregat model where a third stage of the 
+                        launching process was added. Production of the Soyuz U was retired in 2015 after 
+                        a series of mechanical failures.<p>"
+    ) # closes HTML
+), # closes box
+
                 box(title = "Credits",
                   HTML("<p>This Shiny app was created by Christina Chen and Samantha Swan for their BIS15L course. Course details include:<p>
                         <ul>
