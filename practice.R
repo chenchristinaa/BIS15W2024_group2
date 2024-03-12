@@ -122,7 +122,7 @@ server <- function(input, output, session) {
       count(Year) %>%
       ggplot(aes(x = Year, y = n))+
       geom_col(fill = "purple")+
-      labs(title = "Frequency a Selected Rocket was Launched Per Year",
+      labs(title = paste("Frequency", input$image_select, "was Launched Per Year"),
            y = "Frequency")
 }) #closes render plot
 
