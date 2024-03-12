@@ -20,7 +20,7 @@ ui <- dashboardPage(
     tabItems(
       tabItem(tabName = "dashboard",
               fluidRow(
-                box(title = "Space Missions Over Time", width = 12,
+                box(title = "Launch Statistics Over Time", width = 12,
                     radioButtons("x", "Select Fill", choices = c("MissionStatus", "RocketStatus", "Country"),
                                  selected = "Country"),
                     plotOutput("plot1")
@@ -28,7 +28,7 @@ ui <- dashboardPage(
 ), # closes fluid row
               
               fluidRow(
-                box(title = "Rocket Pictures",
+                box(title = "Investigation of Specific Rockets",
                     selectInput("image_select", "Select Image", choices = c("Cosmos-3M (11K65M)", "Voskhod","Falcon 9 Block 5","Cosmos-2I (63SM)", "Soyuz U")),
                     imageOutput("image")
 ), #close the second box 
