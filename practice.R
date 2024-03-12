@@ -129,7 +129,7 @@ server <- function(input, output, session) {
       mutate(Year = as.numeric(Year)) %>%
       count(Year) %>%
       ggplot(aes(x = Year, y = n))+
-      geom_col(fill = "purple")+
+      geom_col(fill = "darkslateblue")+
       geom_text(aes(label = n), hjust = 0.5, vjust = -.75, size = 4, angle = 0, color = "black") +
       labs(title = paste("Frequency", input$image_select, "was Launched Per Year"),
            y = "Frequency")
