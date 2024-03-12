@@ -5,7 +5,7 @@ library(shinydashboard)
 spacemission_fixed <- read_csv("data/space_missions_fixed.csv") %>% 
   separate("Location", into = c("site1", "site2", "site3", "site4", "Area", "Country"), extra = "drop", fill = "left", sep = ",") %>%
   select(-site1, -site2, -site3, -site4) %>%
-  separate(Date, into = c("Year", "Month", "Date"), sep = "-")
+  separate(Date, into = c("Year", "Month", "Day"), sep = "-")
 
 ui <- dashboardPage(
   dashboardHeader(title = "Space Missions"),
