@@ -42,11 +42,11 @@ ui <- dashboardPage(
                   HTML("<p>Data collected from:<p>
                         <li><a href='https://mavenanalytics.io/data-playground?page=5&pageSize=5'>Maven Analytics</a></li>
                         <p>Images collected from:<p>
-                        <li><a href='www.google.com'>Cosmos-2I (63SM)</a></li>
-                        <li><a href='www.google.com'>Cosmos-3M (11K65M)</a></li>
-                        <li><a href='www.google.com'>Falcon 9 Block 5</a></li>
-                        <li><a href='www.google.com'>Soyuz U</a></li>
-                        <li><a href='www.google.com'>Voskhod</a></li>"
+                        <li><a href='https://www.defencetalk.com/wp-content/uploads/2011/06/soyuz-u-rocket-cosmos.jpg'>Cosmos-2I (63SM)</a></li>
+                        <li><a href='https://space.skyrocket.de/img_lau/kosmos-3m__abrixas__1.jpg'>Cosmos-3M (11K65M)</a></li>
+                        <li><a href='https://www.spacelaunchschedule.com/wp-content/uploads/falcon2520925_image_20210107183433.jpeg'>Falcon 9 Block 5</a></li>
+                        <li><a href='https://spaceflight101.com/progress-ms-05/photos-final-soyuz-u-takes-shape-for-liftoff-from-baikonur/'>Soyuz U</a></li>
+                        <li><a href='https://vtwp-media.s3-accelerate.amazonaws.com/2022/09/vostok-spacecraft-scaled.jpg'>Voskhod</a></li>"
                   ) # closes HTML
 ), # closes box
 
